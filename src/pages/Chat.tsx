@@ -3,6 +3,7 @@ import { ChatContext } from "../context/ChatContext";
 import { AuthContext } from "../context/AuthContext";
 import UserChat from "../components/UserChat";
 import AvailableUsers from "../components/AvailableUsers";
+import ChatBox from "../components/ChatBox";
 
 const Chat = () => {
     const { userChats, updateCurrentChat } = useContext(ChatContext);
@@ -22,7 +23,7 @@ const Chat = () => {
                 </div>
             </div>
             <div className="w-2/3 p-10">
-                Chat Box
+                <ChatBox/>
             </div>
         </div>
     )

@@ -19,8 +19,10 @@ interface AuthContextType {
     userChats: UserChats[] | null;
     availableUsers: UserData[] | null;
     createChat: (firstId: string, secondId: string) => void;
+    currentChat: UserChats | null;
     updateCurrentChat: (chat: UserChats) => void;
     messages: any;
+    sendTextMessage: (textMessage: string, sender: any, chatId: string, setTextMessage: any) => void;
 }
 
 export const ChatContext = createContext<AuthContextType>({ user: null });
@@ -31,6 +33,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     const [availableUsers, setAvailableUsers] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [messages, setMessages] = useState(null);
+    const [newMessage, setNewMessage] = useState(null);
 
     useEffect(() => {
         const getUsers = async () => {
@@ -53,7 +56,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
                 })
                 setAvailableUsers(availableUsersForChat);
             } catch (err) {
-                childRef.current?.notify('Error fetching users!');
+                console.log(err);
             }
         }
         getUsers();
@@ -73,7 +76,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
                 }
                 setUserChats(data);
             } catch (err) {
-                childRef.current?.notify('Error fetching chats!');
+                console.log(err);
             }
         };
 
@@ -95,12 +98,34 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
                 setMessages(data);
                 console.log(data);
             } catch (err) {
-                childRef.current?.notify('Error fetching messages!');
+                console.log(err);
             }
         };
 
         fetchMessages();
     }, [currentChat]);
+
+    const sendTextMessage = async (textMessage: string, sender: UserData, chatId: string, setTextMessage: any) => {
+        try{
+            const res = await fetch('http://localhost:8000/api/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    chatId: chatId,
+                    senderId: sender?.id,
+                    text: textMessage,
+                }),
+            });
+            const data = await res.json();
+            setTextMessage('');
+            setNewMessage(data);
+            setMessages((prev)=> [...prev, data]);
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     const updateCurrentChat = (chat: UserChats) => {
         setCurrentChat(chat);
@@ -118,12 +143,12 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
             const data = await res.json();
             setUserChats((prev)=> [...prev, data]);
         } catch (err) {
-            childRef.current?.notify('Error creating chat!');
+            console.log(err);
         }
     }
 
     return (
-        <ChatContext.Provider value={{ userChats, availableUsers, createChat, updateCurrentChat, messages }}>
+        <ChatContext.Provider value={{ userChats, availableUsers, createChat, currentChat, updateCurrentChat, messages, sendTextMessage }}>
             {children}
             <ErrorAlert ref={childRef} />
         </ChatContext.Provider>
