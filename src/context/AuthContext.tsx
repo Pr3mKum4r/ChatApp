@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useState, ReactNode } from "react";
 
 interface UserData {
     name: string;
@@ -21,8 +21,6 @@ export const AuthContext = createContext<AuthContextType>({
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const initialUser = JSON.parse(localStorage.getItem('user') || 'null');
     const [user, setUser] = useState<UserData | null>(initialUser);
-
-    console.log(user);
 
     const updateUser = (userData: UserData) => {
         localStorage.setItem('user', JSON.stringify(userData));
