@@ -1,31 +1,58 @@
 import { createContext, ReactNode, useEffect, useState, useRef } from "react";
 import ErrorAlert from "../components/ErrorAlert";
+import { Socket, io } from "socket.io-client";
 
 interface UserData {
     id: string;
     name: string;
     email: string;
+    token?: string;
 }
 
 interface UserChats {
     id: string;
     members: string[];
+    createdAt?: Date;
+}
+
+interface Message {
+    id: string;
+    chatId: string;
+    senderId: string;
+    text: string;
     createdAt: Date;
 }
 
+interface OnlineUser {
+    userId: string;     
+    socketId: string;   
+}
 
-interface AuthContextType {
+interface ChatContextType {
     user: UserData | null;
     userChats: UserChats[] | null;
     availableUsers: UserData[] | null;
     createChat: (firstId: string, secondId: string) => void;
     currentChat: UserChats | null;
     updateCurrentChat: (chat: UserChats) => void;
-    messages: any;
-    sendTextMessage: (textMessage: string, sender: any, chatId: string, setTextMessage: any) => void;
+    messages: Message[] | null;
+    sendTextMessage: (textMessage: string, sender: UserData, chatId: string, setTextMessage: (newMessage: string) => void) => void;
+    onlineUsers: OnlineUser[] | null;
 }
 
-export const ChatContext = createContext<AuthContextType>({ user: null });
+const defaultChatContext: ChatContextType = {
+    user: null,
+    userChats: null,
+    availableUsers: null,
+    createChat: () => {}, 
+    currentChat: null,
+    updateCurrentChat: () => {},
+    messages: null,
+    sendTextMessage: () => {}, 
+    onlineUsers: null,
+};
+
+export const ChatContext = createContext<ChatContextType>(defaultChatContext);
 
 export const ChatContextProvider = ({ children, user }: { children: ReactNode, user: UserData }) => {
     const [userChats, setUserChats] = useState(null);
@@ -34,6 +61,42 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     const [currentChat, setCurrentChat] = useState(null);
     const [messages, setMessages] = useState(null);
     const [newMessage, setNewMessage] = useState(null);
+    const [socket, setSocket] = useState(null);
+    const [onlineUsers, setOnlineUsers] = useState([]);
+
+    //initialize the socket
+    useEffect(() =>{
+        const newSocket: Socket = io("http://localhost:3000");
+        setSocket(newSocket);
+        return () => newSocket.disconnect();
+    }, [user]);
+
+    //Add new user to online users
+    useEffect(() => {
+        if(!socket) return;
+        socket.emit('addNewUser', user?.id);
+        socket.on('emitOnlineUsers', (onlineUsers: any) => {
+            setOnlineUsers(onlineUsers);
+        });
+        return () => socket.off('emitOnlineUsers');
+    }, [socket]);
+
+    //Send message
+    useEffect(() => {
+        if(!socket) return;
+        const recieverId = currentChat?.members?.find((id: string) => id !== user?.id);
+        socket.emit("sendMessage", {...newMessage, receiverId: recieverId });
+    }, [newMessage]);
+
+    //Recieve message
+    useEffect(() => {
+        if(!socket) return;
+        socket.on("getMessage", (data: any) => {
+            if(currentChat?.id !== data.chatId) return;
+            setMessages((prev)=> [...prev, data]);
+        });
+        return () => socket.off("getMessage");
+    }, [socket, currentChat]);
 
     useEffect(() => {
         const getUsers = async () => {
@@ -44,11 +107,11 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
                     }
                 });
                 const resData = await res.json();
-                const availableUsersForChat = resData.filter((availableUser) => {
+                const availableUsersForChat = resData.filter((availableUser: UserData) => {
                     let isChatCreated = false;
                     if (availableUser.id === user.id) return false;
                     if (userChats) {
-                        isChatCreated = userChats?.some((chat) => {
+                        isChatCreated = userChats?.some((chat: UserChats) => {
                             return chat.members[0] === availableUser.id || chat.members[1] === availableUser.id;
                         });
                     }
@@ -105,7 +168,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
         fetchMessages();
     }, [currentChat]);
 
-    const sendTextMessage = async (textMessage: string, sender: UserData, chatId: string, setTextMessage: any) => {
+    const sendTextMessage = async (textMessage: string, sender: UserData, chatId: string, setTextMessage: (newMessage: string) => void) => {
         try{
             const res = await fetch('http://localhost:8000/api/v1/messages', {
                 method: 'POST',
@@ -148,7 +211,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     }
 
     return (
-        <ChatContext.Provider value={{ userChats, availableUsers, createChat, currentChat, updateCurrentChat, messages, sendTextMessage }}>
+        <ChatContext.Provider value={{ userChats, availableUsers, createChat, currentChat, updateCurrentChat, messages, sendTextMessage, onlineUsers }}>
             {children}
             <ErrorAlert ref={childRef} />
         </ChatContext.Provider>

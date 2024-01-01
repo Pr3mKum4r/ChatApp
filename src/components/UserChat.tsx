@@ -1,8 +1,14 @@
 import { useFetchReciever } from "../hooks/useFetchReciever";
 import avatar from '../assets/avatar.svg';
+import { useContext } from "react";
+import { ChatContext } from "@/context/ChatContext";
 
 const UserChat = ({ chat, user }) => {
     const { reciever } = useFetchReciever(chat, user);
+    const { onlineUsers } = useContext(ChatContext);
+
+    const isOnline = onlineUsers?.find((user) => user.userId === reciever?.id);
+
     return (
         <>
             <div className="flex cursor-pointer">
@@ -11,7 +17,7 @@ const UserChat = ({ chat, user }) => {
                 </div>
                 <div className="flex flex-col w-11/12">
                     <div className="flex justify-end">
-                        <div className="bg-green-400 w-2 h-2 rounded-full"></div>
+                        <div className={isOnline ? "bg-green-400 w-2 h-2 rounded-full" : ""}></div>
                     </div>
                     <div className="flex justify-between items-center px-2">
                         <p className="text-white">{reciever?.name}</p>

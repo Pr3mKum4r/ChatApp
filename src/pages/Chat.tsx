@@ -9,7 +9,7 @@ const Chat = () => {
     const { userChats, updateCurrentChat } = useContext(ChatContext);
     const { user } = useContext(AuthContext);
     return (
-        <div className="flex bg-gray-900 h-lvh">
+        <div className="flex bg-gray-900 h-[calc(100vh-64px)]">
             <div className="w-1/3 p-10">
                 <AvailableUsers/>
                 <div className="flex flex-col">

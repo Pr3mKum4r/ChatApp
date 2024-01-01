@@ -1,10 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
 import profile from '../assets/profile.svg';
 
 const Navbar = () => {
@@ -13,6 +10,19 @@ const Navbar = () => {
 
     // Function to toggle the navbar
     const toggleNavbar = () => setIsOpen(!isOpen);
+
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const { user, logoutUser } = useContext(AuthContext);
 
@@ -37,7 +47,31 @@ const Navbar = () => {
                                 <div>
                                     {user && <span className="text-white text-lg mr-4">{user.name}</span>}
                                 </div>
-                                <Popover>
+                                <div onClick={handleClick}>
+                                    <img className="w-8 h-8 cursor-pointer" src={profile} alt='avatar' />
+                                </div>
+                                <Popover
+                                    id={id}
+                                    open={open}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }}
+                                    style={{marginTop: '8px', padding: '20px' }}
+                                >
+                                    <div className='p-3 bg-slate-800 border-slate-800 w-fit self-start flex flex-col items-center'>
+                                        <a onClick={() => logoutUser()} href="/login" className="block lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
+                                            Logout
+                                        </a>
+                                    </div>
+                                </Popover>
+                                {/* <Popover>
                                     <PopoverTrigger>
                                         <img className="w-8 h-8 cursor-pointer" src={profile} alt='avatar' />
                                     </PopoverTrigger>
@@ -46,7 +80,7 @@ const Navbar = () => {
                                             Logout
                                         </a>
                                     </PopoverContent>
-                                </Popover>
+                                </Popover> */}
                             </>
                         ) : (
                             <>
