@@ -6,12 +6,17 @@ const Register = () => {
     const navigate = useNavigate();
     const childRef = useRef();
     const [name, setName] = useState('');
+    const [language, setLanguage] = useState('en');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    
+
     const nameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
+    }
+
+    const languageHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setLanguage(event.target.value);
     }
 
     const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,29 +31,30 @@ const Register = () => {
         setConfirmPassword(event.target.value);
     }
     const submitHandler = async () => {
-        if (password === '' || name === '' || email === '') {
+        console.log(language);
+        if (password === '' || name === '' || email === '' || language === '') {
             childRef.current?.notify('All fields are required!');
             return;
         }
-    
+
         if (password !== confirmPassword) {
             childRef.current?.notify('Passwords do not match!');
             return;
         }
-    
+
         try {
             const res = await fetch('http://localhost:8000/api/v1/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, email, password }),
+                body: JSON.stringify({ name, email, password, preferredLanguage: language }),
             });
             const data = await res.json()
-    
+
             if (res.status === 200) {
                 navigate('/login');
-            } else if(res.status === 400) {
+            } else if (res.status === 400) {
                 childRef.current?.notify(data.message);
             }
         } catch (error) {
@@ -61,8 +67,8 @@ const Register = () => {
             setConfirmPassword('');
         }
     };
-    
-    
+
+
 
     return (
         <section className="bg-gray-900">
@@ -74,20 +80,31 @@ const Register = () => {
                         </h1>
                         <form className="space-y-4 md:space-y-6" action="#">
                             <div>
-                                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
-                                <input type="email" name="email" id="email" onChange={nameHandler} value={name} className="focus:outline-none border sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Enter your name" />
+                                <label htmlFor="name" className="block mb-2 text-sm font-medium text-white">Your name</label>
+                                <input type="email" name="email" id="email" onChange={nameHandler} value={name} className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Enter your name" />
                             </div>
                             <div>
-                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                                <input type="email" name="email" id="email" onChange={emailHandler} value={email} className="focus:outline-none border sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="name@company.com" />
+                                <label htmlFor="lang" className="block mb-2 text-sm font-medium text-white">Your preferred language</label>
+                                <select id="countries" value={language} onChange={languageHandler} className="focus:outline-none text-sm rounded-lg block w-full p-2.5 bg-gray-700 placeholder-gray-400 text-white">
+                                    <option value="en" selected>English</option>
+                                    <option value="ja">Japanese</option>
+                                    <option value="fr">French</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="de">German</option>
+                                    <option value="ru">Russian</option>
+                                </select>
                             </div>
                             <div>
-                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input type="password" name="password" onChange={passwordHandler} value={password} id="password" placeholder="••••••••" className="focus:outline-none border sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
+                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-white">Your email</label>
+                                <input type="email" name="email" id="email" onChange={emailHandler} value={email} className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="name@company.com" />
                             </div>
                             <div>
-                                <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
-                                <input type="password" name="confirm-password" onChange={confirmPasswordHandler} value={confirmPassword} id="confirm-password" placeholder="••••••••" className="focus:outline-none border sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
+                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">Password</label>
+                                <input type="password" name="password" onChange={passwordHandler} value={password} id="password" placeholder="••••••••" className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
+                            </div>
+                            <div>
+                                <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-white">Confirm password</label>
+                                <input type="password" name="confirm-password" onChange={confirmPasswordHandler} value={confirmPassword} id="confirm-password" placeholder="••••••••" className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
                             </div>
                             <button type="button" onClick={submitHandler} className="text-white w-full focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 bg-blue-600 hover:bg-blue-700">Register</button>
                             <p className="text-sm font-light text-gray-400">

@@ -5,11 +5,12 @@ import { useFetchReciever } from "../hooks/useFetchReciever";
 import moment from 'moment';
 import InputEmoji from "react-input-emoji";
 import sendIcon from '../assets/send.png';
+import backIcon from '../assets/arrow.png';
 import DefaultChatBox from "./DefaultChatBox";
 
-const ChatBox = () => {
+const ChatBox = ({ handleBack }) => {
     const { user } = useContext(AuthContext);
-    const { currentChat, messages, sendTextMessage } = useContext(ChatContext);
+    const { currentChat, messages, sendTextMessage, setMessages } = useContext(ChatContext);
     const { reciever } = useFetchReciever(currentChat, user);
     const [textMessage, setTextMessage] = useState('');
     const messagesEndRef = useRef(null);
@@ -26,29 +27,54 @@ const ChatBox = () => {
 
     console.log(user)
 
+    const sendOptimisticTextMessage = (textMessage, user, reciever, currentChatId) => {
+        const temporaryId = 'temp-' + new Date().getTime();
+    
+        const optimisticMessage = {
+            id: temporaryId, // Temporary unique ID
+            chatId: currentChatId,
+            senderId: user.id,
+            text: textMessage,
+            createdAt: new Date(),
+            // other fields as needed
+        };
+    
+        // Optimistically update the messages array
+        setMessages(prevMessages => [...prevMessages, optimisticMessage]);
+    
+        // Call the actual send message function
+        sendTextMessage(textMessage, user, reciever, currentChatId, setTextMessage, temporaryId);
+    };
+    
+
     return (
         <div className="flex flex-col h-full">
-            <div className="bg-slate-700 py-1 rounded-t-lg">
-                <p className="text-center text-white">{reciever?.name}</p>
+            <div className="bg-slate-700 py-1 rounded-t-lg flex ">
+                <img src={backIcon} alt='back' className="h-8 w-8 p-2 cursor-pointer lg:hidden" onClick={handleBack}/>
+                <p className="w-11/12 text-center text-white">{reciever?.name}</p>
             </div>
 
             <div className="bg-slate-800 h-[73%] p-4 flex flex-col overflow-y-scroll">
-                {messages && messages.map((message, index) =>
-                    <div key={index} className={`${message?.senderId === user?.id ?
-                        "bg-emerald-500 w-fit p-2 rounded-lg my-1 self-end"
-                        : "bg-[#91A3B0] w-fit p-2 rounded-lg my-1"}`}>
-                        <p className="">{message.text}</p>
-                        <p className="text-slate-700 text-[8pt] mt-1">{moment(message.createdAt).calendar()}</p>
-                    </div>
-                )}
+                {messages && messages.map((message, index) => {
+                    return message?.senderId === user?.id ?
+                        <div key ={index} className="bg-emerald-500 w-fit p-2 rounded-lg my-1 self-end">
+                            <p>{message.text}</p>
+                            <p className="text-slate-700 text-[8pt] mt-1">{moment(message.createdAt).calendar()}</p>
+                        </div> :
+                        <div key={index} className="bg-[#91A3B0] w-fit p-2 rounded-lg my-1">
+                            <p>{message.translatedText}</p>
+                            <p className="text-slate-700 text-[8pt] mt-1">{moment(message.createdAt).calendar()}</p>
+                        </div>;
+                })}
                 <div ref={messagesEndRef} />
             </div>
+
             <div className="flex bg-slate-800 rounded-b-lg p-4">
                 <InputEmoji
                     value={textMessage}
                     onChange={setTextMessage}
                 />
-                <button onClick={() => sendTextMessage(textMessage, user, currentChat.id, setTextMessage)}>
+                <button onClick={() => sendOptimisticTextMessage(textMessage, user, reciever, currentChat.id)}>
                     <img src={sendIcon} alt="send" className="w-6 h-6" />
                 </button>
             </div>

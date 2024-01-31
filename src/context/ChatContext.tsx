@@ -7,6 +7,7 @@ interface UserData {
     name: string;
     email: string;
     token?: string;
+    preferredLanguage: string;
 }
 
 interface UserChats {
@@ -21,6 +22,9 @@ interface Message {
     senderId: string;
     text: string;
     createdAt: Date;
+    originalLanguage: string;
+    targetLanguage: string;
+    translatedText: string;
 }
 
 interface OnlineUser {
@@ -38,6 +42,7 @@ interface ChatContextType {
     messages: Message[] | null;
     sendTextMessage: (textMessage: string, sender: UserData, chatId: string, setTextMessage: (newMessage: string) => void) => void;
     onlineUsers: OnlineUser[] | null;
+    setMessages: () => void;
 }
 
 const defaultChatContext: ChatContextType = {
@@ -63,6 +68,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     const [newMessage, setNewMessage] = useState(null);
     const [socket, setSocket] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const [notifications, setNotifications] = useState([]);
 
     //initialize the socket
     useEffect(() =>{
@@ -95,7 +101,19 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
             if(currentChat?.id !== data.chatId) return;
             setMessages((prev)=> [...prev, data]);
         });
-        return () => socket.off("getMessage");
+        socket.on("getNotification", (data: any) => {
+            const isChatOpen = currentChat?.members.some(id => id === data.senderId);
+            if(isChatOpen){
+                setNotifications(prev => [{...data, isRead:true}, ...prev])
+            }
+            else{
+                setNotifications(prev => [data, ...prev])
+            }
+        });
+        return () => {
+            socket.off("getMessage");
+            socket.off("getNotification");
+        }
     }, [socket, currentChat]);
 
     useEffect(() => {
@@ -168,8 +186,37 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
         fetchMessages();
     }, [currentChat]);
 
-    const sendTextMessage = async (textMessage: string, sender: UserData, chatId: string, setTextMessage: (newMessage: string) => void) => {
+    const translateMessage = async ( sourceLanguage: string, messageText: string, targetLanguage: string) => {
+        try {
+            const res = await fetch('http://localhost:8000/api/v1/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    sourceLanguage: sourceLanguage, 
+                    messageText: messageText, 
+                    targetLanguage: targetLanguage 
+                }),
+            });
+            const data = await res.json();
+            return data.translatedText;
+        } catch (err) {
+            console.log(err);
+        }
+    }   
+
+    const sendTextMessage = async (textMessage: string, sender: UserData, reciever: UserData, chatId: string, setTextMessage: (newMessage: string) => void, temporaryId: string) => {
         try{
+            setTextMessage('');
+            const originalLanguage = sender?.preferredLanguage;
+            const targetLanguage = reciever?.preferredLanguage;
+
+            console.log(sender);
+            console.log(targetLanguage);
+
+            const translatedText = await translateMessage(originalLanguage, textMessage, targetLanguage);
+
             const res = await fetch('http://localhost:8000/api/v1/messages', {
                 method: 'POST',
                 headers: {
@@ -179,14 +226,21 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
                     chatId: chatId,
                     senderId: sender?.id,
                     text: textMessage,
+                    originalLanguage: originalLanguage,
+                    targetLanguage: targetLanguage,
+                    translatedText: translatedText,
                 }),
             });
             const data = await res.json();
-            setTextMessage('');
             setNewMessage(data);
-            setMessages((prev)=> [...prev, data]);
+            setMessages(prevMessages => {
+                return prevMessages.map(message => 
+                    message.id === temporaryId ? { ...message, ...data, id: data.id } : message
+                );
+            });
         } catch (err) {
             console.log(err);
+            setMessages(prevMessages => prevMessages.filter(message => message.id !== temporaryId));
         }
     }
 
@@ -211,7 +265,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     }
 
     return (
-        <ChatContext.Provider value={{ userChats, availableUsers, createChat, currentChat, updateCurrentChat, messages, sendTextMessage, onlineUsers }}>
+        <ChatContext.Provider value={{ userChats, availableUsers, createChat, currentChat, updateCurrentChat, messages, sendTextMessage, onlineUsers, notifications, setMessages}}>
             {children}
             <ErrorAlert ref={childRef} />
         </ChatContext.Provider>
