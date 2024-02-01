@@ -1,19 +1,19 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
 import profile from '../assets/profile.svg';
+import Notification from './Notification';
 
 const Navbar = () => {
     // State to manage the toggle status of the navbar
-    const [isOpen, setIsOpen] = useState(false);
+    // const [isOpen, setIsOpen] = useState(false);
 
     // Function to toggle the navbar
-    const toggleNavbar = () => setIsOpen(!isOpen);
+    // const toggleNavbar = () => setIsOpen(!isOpen);
 
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -31,19 +31,20 @@ const Navbar = () => {
             <div className="flex items-center flex-shrink-0 text-white mr-6">
                 <span className="font-semibold text-xl tracking-tight">ChatApp</span>
             </div>
-            <div className="block lg:hidden">
+            {/* <div className="block lg:hidden">
                 <button onClick={toggleNavbar} className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
                     <svg className="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" /></svg>
                 </button>
-            </div>
+            </div> */}
             {/* <div>
                 {user && <span className="text-white mr-4">Logged in as {user.name}</span>}
             </div> */}
-            <div className={`${isOpen ? 'max-h-40' : 'max-h-0'} transition-all duration-500 ease-in-out overflow-hidden lg:max-h-full lg:flex lg:items-end`}>
+            <div className={` transition-all duration-500 ease-in-out overflow-hidden lg:max-h-full lg:flex lg:items-end`}>
                 <div className="text-sm lg:flex-grow flex items-center">
                     {
                         user ? (
                             <>
+                                <Notification/>
                                 <div>
                                     {user && <span className="text-white text-lg mr-4">{user.name}</span>}
                                 </div>

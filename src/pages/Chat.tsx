@@ -20,7 +20,7 @@ const Chat = () => {
     }
     return (
         <div className="flex bg-gray-900 h-[calc(100vh-64px)]">
-            <div className={`lg:w-1/3 p-10 ${isChatBoxVisible ? 'hidden lg:block' : 'w-full'}`}>
+            <div className={`lg:w-1/3 p-5 lg:p-10 ${isChatBoxVisible ? 'hidden lg:block' : 'w-full'}`}>
                 <AvailableUsers/>
                 <div className="flex flex-col">
                     {userChats?.map((chat, index) => {
@@ -32,7 +32,7 @@ const Chat = () => {
                     })}
                 </div>
             </div>
-            <div className={`lg:w-2/3 p-10 ${isChatBoxVisible ? 'w-full' : 'hidden lg:block'}`}>
+            <div className={`lg:w-2/3 p-5 lg:p-10 ${isChatBoxVisible ? 'w-full' : 'hidden lg:block'}`}>
                 <ChatBox handleBack={handleBackClick}/>
             </div>
         </div>
