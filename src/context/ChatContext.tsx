@@ -90,9 +90,12 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     const [notifications, setNotifications] = useState<Notification[] | null>([]);
     const [allUsers, setAllUsers] = useState([]);
 
+    const backendURL= 'https://chat-app-server-pr3mkum4r.vercel.app/';
+
     //initialize the socket
     useEffect(() =>{
-        const newSocket: Socket = io("http://localhost:3000");
+        const newSocket: Socket = io("https://chat-app-student410.koyeb.app/", { path: "/socket.io" });
+
         setSocket(newSocket);
         return () => {
             newSocket.disconnect();
@@ -141,7 +144,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const res = await fetch('http://localhost:8000/api/v1/users', {
+                const res = await fetch(backendURL + 'api/v1/users', {
                     headers: {
                         'Content-Type': 'application/json',
                     }
@@ -169,7 +172,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     useEffect(() => {
         const fetchUserChats = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/api/v1/chats/${user?.id}`, {
+                const res = await fetch(`${backendURL}api/v1/chats/${user?.id}`, {
                     headers: {
                         'Content-Type': 'application/json',
                     }
@@ -190,7 +193,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/api/v1/messages/${currentChat?.id}`, {
+                const res = await fetch(`${backendURL}api/v1/messages/${currentChat?.id}`, {
                     headers: {
                         'Content-Type': 'application/json',
                     }
@@ -211,7 +214,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
 
     const translateMessage = async ( sourceLanguage: string, messageText: string, targetLanguage: string) => {
         try {
-            const res = await fetch('http://localhost:8000/api/v1/translate', {
+            const res = await fetch(backendURL + 'api/v1/translate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -240,7 +243,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
 
             const translatedText = await translateMessage(originalLanguage, textMessage, targetLanguage);
 
-            const res = await fetch('http://localhost:8000/api/v1/messages', {
+            const res = await fetch(backendURL + 'api/v1/messages', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -273,7 +276,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
 
     const createChat = async (firstId: string, secondId: string) => {
         try {
-            const res = await fetch('http://localhost:8000/api/v1/chats', {
+            const res = await fetch(backendURL + 'api/v1/chats', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

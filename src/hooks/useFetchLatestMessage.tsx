@@ -21,10 +21,11 @@ interface Message {
 export const useFetchLatestMessage = (chat: UserChats) => {
     const {newMessage, notifications} = useContext(ChatContext);
     const [latestMessage, setLatestMessage] = useState<Message | null>(null);
+    const backendURL = 'https://chat-app-server-pr3mkum4r.vercel.app/';
 
     useEffect(() => {
         const getMessages = async () => {
-            const res = await fetch(`http://localhost:8000/api/v1/messages/${chat?.id}`, {
+            const res = await fetch(`${backendURL}api/v1/messages/${chat?.id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
