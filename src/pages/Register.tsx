@@ -15,6 +15,8 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const backendURL = 'https://chat-app-server-pr3mkum4r.vercel.app/';
+
     const nameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
     }
@@ -47,7 +49,7 @@ const Register = () => {
         }
 
         try {
-            const res = await fetch('http://localhost:8000/api/v1/users/register', {
+            const res = await fetch(backendURL + 'api/v1/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

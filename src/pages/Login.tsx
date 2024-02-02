@@ -14,6 +14,8 @@ const Login = () => {
     const childRef = useRef<ErrorAlertMethods>();
     const { setUser } = useContext(AuthContext);
 
+    const backendURL = 'https://chat-app-server-pr3mkum4r.vercel.app/'
+
     const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value.toLowerCase());
     }
@@ -24,7 +26,7 @@ const Login = () => {
 
     const submitHandler = async () =>{
         try {
-            const res = await fetch('http://localhost:8000/api/v1/users/login', {
+            const res = await fetch(backendURL + 'api/v1/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
