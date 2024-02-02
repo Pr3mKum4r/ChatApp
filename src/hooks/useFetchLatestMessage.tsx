@@ -1,9 +1,26 @@
 import { ChatContext } from "@/context/ChatContext";
 import { useContext, useEffect, useState } from "react";
 
-export const useFetchLatestMessage = (chat) => {
+interface UserChats {
+    id: string;
+    members: string[];
+    createdAt?: Date;
+}
+
+interface Message {
+    id: string;
+    chatId: string;
+    senderId: string;
+    text: string;
+    createdAt: Date;
+    originalLanguage: string;
+    targetLanguage: string;
+    translatedText: string;
+}
+
+export const useFetchLatestMessage = (chat: UserChats) => {
     const {newMessage, notifications} = useContext(ChatContext);
-    const [latestMessage, setLatestMessage] = useState(null);
+    const [latestMessage, setLatestMessage] = useState<Message | null>(null);
 
     useEffect(() => {
         const getMessages = async () => {

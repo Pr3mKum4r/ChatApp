@@ -1,4 +1,3 @@
-import { AuthContext } from '@/context/AuthContext';
 import bell from '../assets/bell.png';
 import Popover from '@mui/material/Popover';
 import React, { useContext } from 'react';
@@ -6,9 +5,7 @@ import { ChatContext } from '@/context/ChatContext';
 import moment from 'moment';
 
 const Notification = () => {
-
-    const { user } = useContext(AuthContext);
-    const { notifications, userChats, allUsers, markAllNotificationsAsRead } = useContext(ChatContext);
+    const { notifications, allUsers, markAllNotificationsAsRead } = useContext(ChatContext);
 
     const unreadNotifications = notifications?.filter((notification) => notification.isRead === false);
     const modifiedNotifications = notifications?.map((notification) => {
@@ -37,7 +34,7 @@ const Notification = () => {
         <div className='px-5 flex items-center'>
             <div className='relative p-2'>
                 <img src={bell} className='h-5 w-5 cursor-pointer' alt='bell' onClick={handleClick} />
-                {unreadNotifications?.length > 0 && <span className='bg-red-500 rounded-full h-4 w-4 ml-1 text-xs text-white absolute left-4 top-0 flex justify-center items-center'>{unreadNotifications?.length}</span>}
+                {(unreadNotifications || []).length > 0 && <span className='bg-red-500 rounded-full h-4 w-4 ml-1 text-xs text-white absolute left-4 top-0 flex justify-center items-center'>{unreadNotifications?.length}</span>}
             </div>
             <Popover
                 id={id}
@@ -57,7 +54,7 @@ const Notification = () => {
                 <div className='p-3 bg-slate-800 border-slate-800 w-fit self-start flex flex-col'>
                     <div className='flex mb-2'>
                         <h1 className='text-teal-200'>Notifcations</h1>
-                        <p className='text-teal-200 ml-5 cursor-pointer' onClick={()=> markAllNotificationsAsRead(notifications)}>Mark all as read</p>
+                        <p className='text-teal-200 ml-5 cursor-pointer' onClick={()=> notifications && markAllNotificationsAsRead(notifications)}>Mark all as read</p>
                     </div>
                     {modifiedNotifications?.length === 0 ? <span className='text-white text-sm'>No Notifications Yet !!!</span> : null}
                     {modifiedNotifications && modifiedNotifications.map((notification, index) => {

@@ -5,12 +5,18 @@ import UserChat from "../components/UserChat";
 import AvailableUsers from "../components/AvailableUsers";
 import ChatBox from "../components/ChatBox";
 
+interface UserChats {
+    id: string;
+    members: string[];
+    createdAt?: Date;
+}
+
 const Chat = () => {
     const { userChats, updateCurrentChat } = useContext(ChatContext);
     const { user } = useContext(AuthContext);
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false);
 
-    const handleChatSelection = (chat) => {
+    const handleChatSelection = (chat: UserChats) => {
         updateCurrentChat(chat);
         setIsChatBoxVisible(true); // Show chat box on smaller screens when a chat is selected
     };

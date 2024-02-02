@@ -3,11 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import ErrorAlert from '../components/ErrorAlert';
 import { AuthContext } from '../context/AuthContext';
 
+interface ErrorAlertMethods {
+    notify: (message: string) => void;
+}
+
 const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const childRef = useRef();
+    const childRef = useRef<ErrorAlertMethods>();
     const { setUser } = useContext(AuthContext);
 
     const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

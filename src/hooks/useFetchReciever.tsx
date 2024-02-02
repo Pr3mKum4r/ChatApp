@@ -1,7 +1,21 @@
 import {useState, useEffect} from 'react';
 
-export const useFetchReciever = (chat, user) => {
-    const [reciever, setReciever] = useState(null);
+interface UserData {
+    id: string;
+    name: string;
+    email: string;
+    token?: string;
+    preferredLanguage: string;
+}
+
+interface UserChats {
+    id: string;
+    members: string[];
+    createdAt?: Date;
+}
+
+export const useFetchReciever = (chat: UserChats | null, user: UserData | null) => {
+    const [reciever, setReciever] = useState<UserData | null>(null);
 
     const recieverId = chat?.members?.find((id: string) => id !== user?.id);
 

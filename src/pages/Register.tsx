@@ -2,9 +2,13 @@ import { useRef, useState } from "react";
 import ErrorAlert from "../components/ErrorAlert";
 import { useNavigate } from "react-router-dom";
 
+interface ErrorAlertMethods {
+    notify: (message: string) => void;
+}
+
 const Register = () => {
     const navigate = useNavigate();
-    const childRef = useRef();
+    const childRef = useRef<ErrorAlertMethods>();
     const [name, setName] = useState('');
     const [language, setLanguage] = useState('en');
     const [email, setEmail] = useState('');

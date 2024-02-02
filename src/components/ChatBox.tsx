@@ -8,12 +8,20 @@ import sendIcon from '../assets/send.png';
 import backIcon from '../assets/arrow.png';
 import DefaultChatBox from "./DefaultChatBox";
 
-const ChatBox = ({ handleBack }) => {
+interface UserData {
+    id: string;
+    name: string;
+    email: string;
+    token?: string;
+    preferredLanguage: string;
+}
+
+const ChatBox = ({ handleBack }: {handleBack: ()=>void}) => {
     const { user } = useContext(AuthContext);
-    const { currentChat, messages, sendTextMessage, setMessages } = useContext(ChatContext);
+    const { currentChat, messages, sendTextMessage, appendMessage } = useContext(ChatContext);
     const { reciever } = useFetchReciever(currentChat, user);
     const [textMessage, setTextMessage] = useState('');
-    const messagesEndRef = useRef(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -27,20 +35,27 @@ const ChatBox = ({ handleBack }) => {
 
     console.log(user)
 
-    const sendOptimisticTextMessage = (textMessage, user, reciever, currentChatId) => {
+    const sendOptimisticTextMessage = (textMessage: string, user: UserData | null, reciever: UserData, currentChatId: string | undefined) => {
         const temporaryId = 'temp-' + new Date().getTime();
-    
+        if(!user){
+            console.log('No user');
+            return;
+        }
+        if(!currentChatId) return;
         const optimisticMessage = {
             id: temporaryId, // Temporary unique ID
             chatId: currentChatId,
             senderId: user.id,
             text: textMessage,
             createdAt: new Date(),
+            originalLanguage: 'temp',
+            targetLanguage: 'temp',
+            translatedText: 'temp'
             // other fields as needed
         };
     
         // Optimistically update the messages array
-        setMessages(prevMessages => [...prevMessages, optimisticMessage]);
+        appendMessage(optimisticMessage);
     
         // Call the actual send message function
         sendTextMessage(textMessage, user, reciever, currentChatId, setTextMessage, temporaryId);
@@ -74,7 +89,7 @@ const ChatBox = ({ handleBack }) => {
                     value={textMessage}
                     onChange={setTextMessage}
                 />
-                <button onClick={() => sendOptimisticTextMessage(textMessage, user, reciever, currentChat.id)}>
+                <button onClick={() => sendOptimisticTextMessage(textMessage, user, reciever, currentChat?.id)}>
                     <img src={sendIcon} alt="send" className="w-6 h-6" />
                 </button>
             </div>

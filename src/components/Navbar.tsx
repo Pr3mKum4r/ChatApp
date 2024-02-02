@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import Popover from '@mui/material/Popover';
 import profile from '../assets/profile.svg';

@@ -5,18 +5,32 @@ import { ChatContext } from "@/context/ChatContext";
 import { useFetchLatestMessage } from "@/hooks/useFetchLatestMessage";
 import moment from "moment";
 
-const UserChat = ({ chat, user }) => {
+interface UserData {
+    id: string;
+    name: string;
+    email: string;
+    token?: string;
+    preferredLanguage: string;
+}
+
+interface UserChats {
+    id: string;
+    members: string[];
+    createdAt?: Date;
+}
+
+const UserChat = ({ chat, user }: {chat: UserChats, user: UserData | null}) => {
     const { reciever } = useFetchReciever(chat, user);
     const { onlineUsers, notifications, markThisUserNotificationsAsRead } = useContext(ChatContext);
     const {latestMessage} = useFetchLatestMessage(chat);
 
-    const unreadNotifications = notifications?.filter((notification) => notification.isRead === false);
+    const unreadNotifications= notifications?.filter((notification) => notification.isRead === false);
     const userNotifications = unreadNotifications?.filter((notification) => notification.senderId === reciever?.id);
 
     const isOnline = onlineUsers?.find((user) => user.userId === reciever?.id);
 
-    const truncateText = (text) =>{
-        let shortText = text.substring(0, 20);
+    const truncateText = (text: string) =>{
+        const shortText = text.substring(0, 20);
         if(text.length > 20){
             return `${shortText}...`;
         }
@@ -26,7 +40,7 @@ const UserChat = ({ chat, user }) => {
     return (
         <>
             <div className="flex cursor-pointer" onClick={()=>{
-                if(userNotifications?.length !== 0){
+                if(userNotifications && notifications && userNotifications?.length !== 0){
                     markThisUserNotificationsAsRead(userNotifications, notifications);
                 }
             }}>
@@ -43,9 +57,11 @@ const UserChat = ({ chat, user }) => {
                     </div>
                     <div className="flex justify-between items-center px-2">
                         <p className="text-gray-400 text-sm">{
-                            latestMessage?.text && truncateText(latestMessage?.text)
+                            latestMessage?.senderId === user?.id ? 
+                            latestMessage?.text && truncateText(latestMessage?.text) :
+                            latestMessage?.text && truncateText(latestMessage?.translatedText)
                         }</p>
-                        <p className={userNotifications?.length > 0 ? "text-white bg-teal-400 rounded-full w-4 h-4 text-xs flex justify-center items-center" : "hidden"}>{userNotifications?.length}</p>
+                        <p className={(userNotifications || []).length > 0 ? "text-white bg-teal-400 rounded-full w-4 h-4 text-xs flex justify-center items-center" : "hidden"}>{userNotifications?.length}</p>
                     </div>
                 </div>
             </div>
