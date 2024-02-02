@@ -37,6 +37,8 @@ const UserChat = ({ chat, user }: {chat: UserChats, user: UserData | null}) => {
         return shortText;
     }
 
+    console.log(userNotifications);
+
     return (
         <>
             <div className="flex cursor-pointer" onClick={()=>{

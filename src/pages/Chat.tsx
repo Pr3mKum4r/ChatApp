@@ -23,6 +23,7 @@ const Chat = () => {
 
     const handleBackClick = () => {
         setIsChatBoxVisible(false);
+        updateCurrentChat(null);
     }
     return (
         <div className="flex bg-gray-900 h-[calc(100vh-64px)]">

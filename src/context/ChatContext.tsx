@@ -47,7 +47,7 @@ interface ChatContextType {
     availableUsers: UserData[] | null;
     createChat: (firstId: string, secondId: string) => void;
     currentChat: UserChats | null;
-    updateCurrentChat: (chat: UserChats) => void;
+    updateCurrentChat: (chat: UserChats | null) => void;
     messages: Message[] | null;
     sendTextMessage: (textMessage: string, sender: UserData,reciever: UserData, chatId: string, setTextMessage: (newMessage: string) => void, temporaryId: string) => void;
     onlineUsers: OnlineUser[] | null;
@@ -130,9 +130,11 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
             const isChatOpen = currentChat?.members.some(id => id === data.senderId);
             if(isChatOpen){
                 setNotifications(prev => [{...data, isRead:true}, ...(prev || [])])
+                console.log(notifications);
             }
             else{
                 setNotifications(prev => [data, ...(prev || [])])
+                console.log(notifications);
             }
         });
         return () => {
@@ -270,7 +272,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
         }
     }
 
-    const updateCurrentChat = (chat: UserChats) => {
+    const updateCurrentChat = (chat: UserChats | null) => {
         setCurrentChat(chat);
     }
 
