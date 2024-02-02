@@ -38,7 +38,7 @@ interface Notification {
     date: Date,
 }
 
-interface ErrorAlertMethods {
+interface ErrorAlertHandle {
     notify: (message: string) => void;
 }
 
@@ -80,7 +80,7 @@ export const ChatContext = createContext<ChatContextType>(defaultChatContext);
 
 export const ChatContextProvider = ({ children, user }: { children: ReactNode, user: UserData | null }) => {
     const [userChats, setUserChats] = useState<UserChats[] | null>(null);
-    const childRef = useRef<ErrorAlertMethods>();
+    const childRef = useRef<ErrorAlertHandle>();
     const [availableUsers, setAvailableUsers] = useState([]);
     const [currentChat, setCurrentChat] = useState<UserChats | null>(null);
     const [messages, setMessages] = useState<Message[] | null>(null);

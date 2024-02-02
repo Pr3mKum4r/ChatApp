@@ -16,6 +16,8 @@ const ErrorAlert = forwardRef((props, ref) => {
         theme: "light",
     });
 
+    props;
+
     useImperativeHandle(ref, () => ({
         // Exposing the notify function to parent components via ref
         notify
