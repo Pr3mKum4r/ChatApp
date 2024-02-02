@@ -77,7 +77,7 @@ const Register = () => {
 
 
     return (
-        <section className="bg-gray-900 h-full">
+        <section className="bg-gray-900 h-screen">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -98,6 +98,19 @@ const Register = () => {
                                     <option value="es">Spanish</option>
                                     <option value="de">German</option>
                                     <option value="ru">Russian</option>
+                                    <option value="lzh">Chinese</option>
+                                    <option value="da">Danish</option>
+                                    <option value="nl">Dutch</option>
+                                    <option value="fil">Filipino</option>
+                                    <option value="hi">Hindi</option>
+                                    <option value="id">Indonesian</option>
+                                    <option value="it">Italian</option>
+                                    <option value="ko">Korean</option>
+                                    <option value="fa">Persian</option>
+                                    <option value="pl">Polish</option>
+                                    <option value="pt">Portuguese</option>
+                                    <option value="sv">Swedish</option>
+                                    <option value="vi">Vietnamese</option>
                                 </select>
                             </div>
                             <div>
