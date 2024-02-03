@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import Popover from '@mui/material/Popover';
 import profile from '../assets/profile.svg';
 import Notification from './Notification';
+import logo from '../assets/logo.jpg';
 
 const Navbar = () => {
     // State to manage the toggle status of the navbar
@@ -27,9 +28,9 @@ const Navbar = () => {
     const { user, logoutUser } = useContext(AuthContext);
 
     return (
-        <nav className="flex items-center justify-between flex-wrap bg-black lg:px-14 p-4">
+        <nav className="flex items-center justify-between flex-wrap bg-black lg:px-14 px-2">
             <div className="flex items-center flex-shrink-0 text-white mr-6">
-                <span className="font-semibold text-xl tracking-tight">ChatApp</span>
+                <img src={logo} alt='logo' className='h-20 w-[85px]'/>
             </div>
             {/* <div className="block lg:hidden">
                 <button onClick={toggleNavbar} className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
@@ -46,7 +47,7 @@ const Navbar = () => {
                             <>
                                 <Notification/>
                                 <div>
-                                    {user && <span className="text-white text-lg mr-4">{user.name}</span>}
+                                    {user && <span className="text-white text-lg mr-4 font-poppins">{user.name}</span>}
                                 </div>
                                 <div onClick={handleClick}>
                                     <img className="w-8 h-8 cursor-pointer" src={profile} alt='avatar' />
@@ -85,10 +86,10 @@ const Navbar = () => {
                             </>
                         ) : (
                             <>
-                                <a href="/login" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                                <a href="/login" className="font-poppins lg:font-bold lg:text-lg font-semibold block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
                                     Login
                                 </a>
-                                <a href="/register" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                                <a href="/register" className="font-poppins lg:font-bold lg:text-lg font-semibold block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
                                     Register
                                 </a>
                             </>

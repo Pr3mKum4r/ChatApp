@@ -53,13 +53,13 @@ const Notification = () => {
             >
                 <div className='p-3 bg-slate-800 border-slate-800 w-fit self-start flex flex-col'>
                     <div className='flex mb-2'>
-                        <h1 className='text-teal-200'>Notifcations</h1>
-                        <p className='text-teal-200 ml-5 cursor-pointer' onClick={()=> notifications && markAllNotificationsAsRead(notifications)}>Mark all as read</p>
+                        <h1 className='text-teal-200 font-poppins'>Notifcations</h1>
+                        <p className='text-teal-200 ml-5 cursor-pointer font-poppins' onClick={()=> notifications && markAllNotificationsAsRead(notifications)}>Mark all as read</p>
                     </div>
-                    {modifiedNotifications?.length === 0 ? <span className='text-white text-sm'>No Notifications Yet !!!</span> : null}
+                    {modifiedNotifications?.length === 0 ? <span className='text-white text-sm font-poppins'>No Notifications Yet !!!</span> : null}
                     {modifiedNotifications && modifiedNotifications.map((notification, index) => {
                         return <div key={index} className={notification.isRead ? 'flex flex-col text-white py-2 px-2 mb-2 border-b-2 rounded-md' : 'flex flex-col text-white py-2 px-2 mb-2 border-b-2 bg-slate-700 rounded-md'}>
-                            <span className='text-sm'>{`${notification.senderName} sent you a new message`}</span>
+                            <span className='text-sm font-poppins'>{`${notification.senderName} sent you a new message`}</span>
                             <span className='text-xs'>{moment(notification.date).calendar()}</span>
                         </div>
                     })}

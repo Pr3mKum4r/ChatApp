@@ -54,11 +54,11 @@ const UserChat = ({ chat, user }: {chat: UserChats, user: UserData | null}) => {
                         <div className={isOnline ? "bg-green-400 w-2 h-2 rounded-full" : ""}></div>
                     </div>
                     <div className="flex justify-between items-center px-2">
-                        <p className="text-white">{reciever?.name}</p>
-                        <p className="text-gray-400">{moment(latestMessage?.createdAt).calendar()}</p>
+                        <p className="text-white font-poppins">{reciever?.name}</p>
+                        <p className="text-gray-400 font-poppins">{moment(latestMessage?.createdAt).calendar()}</p>
                     </div>
                     <div className="flex justify-between items-center px-2">
-                        <p className="text-gray-400 text-sm">{
+                        <p className="text-gray-400 text-sm font-poppins">{
                             latestMessage?.senderId === user?.id ? 
                             latestMessage?.text && truncateText(latestMessage?.text) :
                             latestMessage?.text && truncateText(latestMessage?.translatedText)

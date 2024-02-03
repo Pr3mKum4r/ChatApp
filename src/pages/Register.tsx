@@ -81,17 +81,17 @@ const Register = () => {
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
+                        <h1 className="font-poppins text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
                             Create and account
                         </h1>
                         <form className="space-y-4 md:space-y-6" action="#">
                             <div>
-                                <label htmlFor="name" className="block mb-2 text-sm font-medium text-white">Your name</label>
-                                <input type="email" name="email" id="email" onChange={nameHandler} value={name} className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Enter your name" />
+                                <label htmlFor="name" className="font-poppins block mb-2 text-sm font-medium text-white">Your name</label>
+                                <input type="email" name="email" id="email" onChange={nameHandler} value={name} className="font-poppins focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Enter your name" />
                             </div>
                             <div>
-                                <label htmlFor="lang" className="block mb-2 text-sm font-medium text-white">Your preferred language</label>
-                                <select id="countries" value={language} onChange={languageHandler} className="focus:outline-none text-sm rounded-lg block w-full p-2.5 bg-gray-700 placeholder-gray-400 text-white">
+                                <label htmlFor="lang" className="font-poppins block mb-2 text-sm font-medium text-white">Your preferred language</label>
+                                <select id="countries" value={language} onChange={languageHandler} className="font-poppins focus:outline-none text-sm rounded-lg block w-full p-2.5 bg-gray-700 placeholder-gray-400 text-white">
                                     <option value="en" selected>English</option>
                                     <option value="ja">Japanese</option>
                                     <option value="fr">French</option>
@@ -114,20 +114,20 @@ const Register = () => {
                                 </select>
                             </div>
                             <div>
-                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-white">Your email</label>
-                                <input type="email" name="email" id="email" onChange={emailHandler} value={email} className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="name@company.com" />
+                                <label htmlFor="email" className="font-poppins block mb-2 text-sm font-medium text-white">Your email</label>
+                                <input type="email" name="email" id="email" onChange={emailHandler} value={email} className="font-poppins focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="name@company.com" />
                             </div>
                             <div>
-                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">Password</label>
-                                <input type="password" name="password" onChange={passwordHandler} value={password} id="password" placeholder="••••••••" className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
+                                <label htmlFor="password" className="font-poppins block mb-2 text-sm font-medium text-white">Password</label>
+                                <input type="password" name="password" onChange={passwordHandler} value={password} id="password" placeholder="••••••••" className="font-poppins focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
                             </div>
                             <div>
-                                <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-white">Confirm password</label>
-                                <input type="password" name="confirm-password" onChange={confirmPasswordHandler} value={confirmPassword} id="confirm-password" placeholder="••••••••" className="focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
+                                <label htmlFor="confirm-password" className="font-poppins block mb-2 text-sm font-medium text-white">Confirm password</label>
+                                <input type="password" name="confirm-password" onChange={confirmPasswordHandler} value={confirmPassword} id="confirm-password" placeholder="••••••••" className="font-poppins focus:outline-none sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" />
                             </div>
-                            <button type="button" onClick={submitHandler} className="text-white w-full focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 bg-blue-600 hover:bg-blue-700">Register</button>
-                            <p className="text-sm font-light text-gray-400">
-                                Already have an account? <a href="/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                            <button type="button" onClick={submitHandler} className="font-poppins text-white w-full focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 bg-blue-600 hover:bg-blue-700">Register</button>
+                            <p className="text-sm font-light text-gray-400 font-poppins">
+                                Already have an account? <a href="/login" className="font-poppins font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
                             </p>
                             <ErrorAlert ref={childRef} />
                         </form>

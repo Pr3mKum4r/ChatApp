@@ -66,25 +66,25 @@ const ChatBox = ({ handleBack }: {handleBack: ()=>void}) => {
         <div className="flex flex-col h-full">
             <div className="bg-slate-700 py-1 rounded-t-lg flex ">
                 <img src={backIcon} alt='back' className="h-8 w-8 p-2 cursor-pointer lg:hidden" onClick={handleBack}/>
-                <p className="w-11/12 text-center text-white">{reciever?.name}</p>
+                <p className="w-11/12 text-center text-white font-poppins">{reciever?.name}</p>
             </div>
 
             <div className="bg-slate-800 h-[73%] p-4 flex flex-col overflow-y-scroll">
                 {messages && messages.map((message, index) => {
                     return message?.senderId === user?.id ?
                         <div key ={index} className="bg-emerald-500 w-fit p-2 rounded-lg my-1 self-end">
-                            <p>{message.text}</p>
+                            <p className="font-poppins">{message.text}</p>
                             <p className="text-slate-700 text-[8pt] mt-1">{moment(message.createdAt).calendar()}</p>
                         </div> :
                         <div key={index} className="bg-[#91A3B0] w-fit p-2 rounded-lg my-1">
-                            <p>{message.translatedText}</p>
+                            <p className="font-poppins">{message.translatedText}</p>
                             <p className="text-slate-700 text-[8pt] mt-1">{moment(message.createdAt).calendar()}</p>
                         </div>;
                 })}
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="flex bg-slate-800 rounded-b-lg p-4">
+            <div className="flex bg-slate-800 rounded-b-lg p-4 font-poppins">
                 <InputEmoji
                     value={textMessage}
                     onChange={setTextMessage}
